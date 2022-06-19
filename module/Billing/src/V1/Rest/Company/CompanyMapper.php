@@ -52,4 +52,19 @@ class CompanyMapper
         $collection = new CompanyCollection($adapter);
         return $collection;
     }
+
+    public function create(\stdClass $class): bool
+    {
+        //on passe par l'entity pour bénéficier des filtres des getters et setters
+        $entity = new CompanyEntity(get_object_vars($class));
+        $sql = new Sql($this->adapter);
+        $insert = $sql->insert();
+        $insert->into('company');
+        $insert->values($entity->getArrayCopy());
+
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+        return true;
+    }
+
 }
