@@ -2,12 +2,12 @@
 
 namespace Billing\V1\Rest\User;
 
-use Laminas\Db\Adapter\Adapter;
+use Billing\V1\Main\Mapper\GlobalMapper;
 
 class UserMapperFactory
 {
     public function __invoke($services)
     {
-        return new UserMapper($services->get(Adapter::class));
+        return new UserMapper($services->get(GlobalMapper::class));
     }
 }

@@ -2,93 +2,82 @@
 
 namespace Billing\V1\Rest\User;
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Sql\Sql;
-use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
+use Billing\V1\Main\Entity\EntityInterface;
+use Billing\V1\Main\Mapper\GlobalMapper;
+use Laminas\Paginator\Paginator;
 
+/**
+ *
+ */
 class UserMapper
 {
 
-    protected $adapter;
+    /**
+     * @var GlobalMapper
+     */
+    protected $mapper;
 
-    public function __construct(AdapterInterface $adapter)
+    /**
+     * @param GlobalMapper $mapper
+     */
+    public function __construct(GlobalMapper $mapper)
     {
-        $this->adapter = $adapter;
+        $this->mapper = $mapper;
     }
 
-    public function fetchOne(int $id)
+    /**
+     * @param int $id
+     * @return UserEntity
+     */
+    public function fetchOne(int $id): UserEntity
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->from('user');
-        $select->where(['id' => $id]);
-
-        $selectString = $sql->buildSqlString($select);
-        $results = $this->adapter->query($selectString, $this->adapter::QUERY_MODE_EXECUTE);
-
-        if (!$results) {
-            return false;
-        }
-        $data = $results->toArray();
-
-        if (!isset($data[0])) {
-            return false;
-        }
         $entity = new UserEntity();
-        $entity->exchangeArray($data[0]);
+        $this->mapper->fetchOne($id, $entity);
         return $entity;
 
     }
 
-    public function fetchAll()
+    /**
+     * @return UserCollection
+     */
+    public function fetchAll(): UserCollection
     {
-        // the select instance is needed for the collection's paginator
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->from('user');
+        $entity = new UserEntity();
+        return new UserCollection($this->mapper->getFetchAllAdapter($entity));
 
-        $adapter = new DbSelect($select, $this->adapter);
-        $collection = new UserCollection($adapter);
-        return $collection;
     }
 
-    public function create(\stdClass $class): bool
+    /**
+     * @param \stdClass $class
+     * @return \Billing\V1\Main\Entity\EntityInterface
+     */
+    public function create(\stdClass $class): EntityInterface
     {
-
         //on passe par l'entity pour bénéficier des filtres des getters et setters
         $entity = new UserEntity(get_object_vars($class));
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert();
-        $insert->into('user');
-        $insert->values($entity->getArrayCopy());
-
-        $statement = $sql->prepareStatementForSqlObject($insert);
-        $statement->execute();
-        return true;
+        return $this->mapper->create($entity);
     }
 
-    public function update(int $id, \stdClass $class): bool
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id)
     {
-
-        //on passe par l'entity pour bénéficier des filtres des getters et setters
-        $entityToUpdate = $this->fetchOne($id);
-        if (!$entityToUpdate) {
-            return false;
-        }
-
-        //on checke via les mêmes filtres, l'intégrité des données qu'on a reçues
-        $entityToUpdate->exchangeArray(get_object_vars($class));
-
-        $sql = new Sql($this->adapter);
-
-        $update = $sql->update();
-        $update->table('user');
-        $update->set($entityToUpdate->getArrayCopy());
-        $update->where(['id' => $entityToUpdate->getId()]);
-
-        $statement = $sql->prepareStatementForSqlObject($update);
-        $statement->execute();
-        return true;
+        $entity = $this->fetchOne($id);
+        return $this->mapper->delete($entity);
     }
+
+    /**
+     * @param int $id
+     * @param \stdClass $class
+     * @return bool
+     */
+    public function update(int $id, \stdClass $class)
+    {
+        $entity = $this->fetchOne($id);
+        return $this->mapper->update($entity, $class);
+    }
+
 
 }

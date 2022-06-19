@@ -2,93 +2,49 @@
 
 namespace Billing\V1\Rest\Company;
 
-use Billing\V1\Rest\Billing\BillingCollection;
-use Billing\V1\Rest\Billing\BillingEntity;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Sql\Sql;
-use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
+use Billing\V1\Main\Mapper\GlobalMapper;
+use Laminas\Paginator\Paginator;
 
 class CompanyMapper
 {
-    protected $adapter;
+    protected $mapper;
 
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(GlobalMapper $mapper)
     {
-        $this->adapter = $adapter;
+        $this->mapper = $mapper;
     }
 
     public function fetchOne(int $id)
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->from('company');
-        $select->where(['id' => $id]);
-
-        $selectString = $sql->buildSqlString($select);
-        $results = $this->adapter->query($selectString, $this->adapter::QUERY_MODE_EXECUTE);
-
-        if (!$results) {
-            return false;
-        }
-        $data = $results->toArray();
-
-        if (!isset($data[0])) {
-            return false;
-        }
         $entity = new CompanyEntity();
-        $entity->exchangeArray($data[0]);
+        $this->mapper->fetchOne($id, $entity);
         return $entity;
 
     }
 
-    public function fetchAll()
+    public function fetchAll(): Paginator
     {
-        // the select instance is needed for the collection's paginator
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->from('company');
+        $entity = new CompanyEntity();
+        return new CompanyCollection($this->mapper->getFetchAllAdapter($entity));
 
-        $adapter = new DbSelect($select, $this->adapter);
-        $collection = new CompanyCollection($adapter);
-        return $collection;
     }
 
-    public function create(\stdClass $class): bool
+    public function create(\stdClass $class)
     {
         //on passe par l'entity pour bénéficier des filtres des getters et setters
         $entity = new CompanyEntity(get_object_vars($class));
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert();
-        $insert->into('company');
-        $insert->values($entity->getArrayCopy());
-
-        $statement = $sql->prepareStatementForSqlObject($insert);
-        $statement->execute();
-        return true;
+        return $this->mapper->create($entity);
     }
 
-    public function update(int $id, \stdClass $class): bool
+    public function delete(int $id)
     {
-
-        //on passe par l'entity pour bénéficier des filtres des getters et setters
-        $entityToUpdate = $this->fetchOne($id);
-        if (!$entityToUpdate) {
-            return false;
-        }
-
-        //on checke via les mêmes filtres, l'intégrité des données qu'on a reçues
-        $entityToUpdate->exchangeArray(get_object_vars($class));
-
-        $sql = new Sql($this->adapter);
-
-        $update = $sql->update();
-        $update->table('company');
-        $update->set($entityToUpdate->getArrayCopy());
-        $update->where(['id' => $entityToUpdate->getId()]);
-
-        $statement = $sql->prepareStatementForSqlObject($update);
-        $statement->execute();
-        return true;
+        $entity = $this->fetchOne($id);
+        return $this->mapper->delete($entity);
     }
 
+    public function update(int $id, \stdClass $class)
+    {
+        $entity = $this->fetchOne($id);
+        return $this->mapper->update($entity, $class);
+    }
 }

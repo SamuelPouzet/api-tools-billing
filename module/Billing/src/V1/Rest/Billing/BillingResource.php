@@ -116,4 +116,5 @@ class BillingResource extends AbstractResourceListener
     {
         return $this->mapper->update($id, $data);;
     }
+
 }

@@ -1,10 +1,18 @@
 <?php
 namespace Billing\V1\Rest\Company;
 
+use Billing\V1\Main\Entity\EntityInterface;
 use Billing\V1\Main\Entity\GlobalEntity;
 
-class CompanyEntity extends GlobalEntity
+class CompanyEntity extends GlobalEntity implements EntityInterface
 {
+
+    const TABLENAME = 'company';
+
+    public function getTableName()
+    {
+        return self::TABLENAME;
+    }
 
     /**
      * @var int $id

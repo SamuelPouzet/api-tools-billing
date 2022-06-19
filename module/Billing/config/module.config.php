@@ -8,6 +8,7 @@ return [
             \Billing\V1\Rest\User\UserMapper::class =>\Billing\V1\Rest\User\UserMapperFactory::class,
             \Billing\V1\Rest\Company\CompanyResource::class => \Billing\V1\Rest\Company\CompanyResourceFactory::class,
             \Billing\V1\Rest\Company\CompanyMapper::class => \Billing\V1\Rest\Company\CompanyMapperFactory::class,
+            \Billing\V1\Main\Mapper\GlobalMapper::class =>\Billing\V1\Main\Mapper\GlobalMapperFactory::class,
         ],
     ],
     'router' => [
