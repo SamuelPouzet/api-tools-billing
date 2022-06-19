@@ -52,4 +52,43 @@ class UserMapper
         return $collection;
     }
 
+    public function create(\stdClass $class): bool
+    {
+
+        //on passe par l'entity pour bénéficier des filtres des getters et setters
+        $entity = new UserEntity(get_object_vars($class));
+        $sql = new Sql($this->adapter);
+        $insert = $sql->insert();
+        $insert->into('user');
+        $insert->values($entity->getArrayCopy());
+
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+        return true;
+    }
+
+    public function update(int $id, \stdClass $class): bool
+    {
+
+        //on passe par l'entity pour bénéficier des filtres des getters et setters
+        $entityToUpdate = $this->fetchOne($id);
+        if (!$entityToUpdate) {
+            return false;
+        }
+
+        //on checke via les mêmes filtres, l'intégrité des données qu'on a reçues
+        $entityToUpdate->exchangeArray(get_object_vars($class));
+
+        $sql = new Sql($this->adapter);
+
+        $update = $sql->update();
+        $update->table('user');
+        $update->set($entityToUpdate->getArrayCopy());
+        $update->where(['id' => $entityToUpdate->getId()]);
+
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+        return true;
+    }
+
 }
