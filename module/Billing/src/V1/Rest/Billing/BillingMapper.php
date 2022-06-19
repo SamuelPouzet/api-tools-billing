@@ -32,7 +32,7 @@ class BillingMapper
         }
         $data = $results->toArray();
 
-        if (! isset($data[0] )) {
+        if (!isset($data[0])) {
             return false;
         }
         $entity = new BillingEntity();
@@ -61,7 +61,7 @@ class BillingMapper
         $sql = new Sql($this->adapter);
         $insert = $sql->insert();
         $insert->into('bill');
-        $insert->values( $entity->getArrayCopy() );
+        $insert->values($entity->getArrayCopy());
 
         $statement = $sql->prepareStatementForSqlObject($insert);
         $statement->execute();
@@ -73,9 +73,33 @@ class BillingMapper
         $sql = new Sql($this->adapter);
         $delete = $sql->delete();
         $delete->from('bill');
-        $delete->where(['id'=>$id]);
+        $delete->where(['id' => $id]);
 
         $statement = $sql->prepareStatementForSqlObject($delete);
+        $statement->execute();
+        return true;
+    }
+
+    public function update(int $id, \stdClass $class): bool
+    {
+
+        //on passe par l'entity pour bénéficier des filtres des getters et setters
+        $entityToUpdate = $this->fetchOne($id);
+        if (!$entityToUpdate) {
+            return false;
+        }
+
+        //on checke via les mêmes filtres, l'intégrité des données qu'on a reçues
+        $entityToUpdate->exchangeArray(get_object_vars($class));
+
+        $sql = new Sql($this->adapter);
+
+        $update = $sql->update();
+        $update->table('bill');
+        $update->set($entityToUpdate->getArrayCopy());
+        $update->where(['id' => $entityToUpdate->getId()]);
+
+        $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
         return true;
     }

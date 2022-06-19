@@ -1,4 +1,5 @@
 <?php
+
 namespace Billing\V1\Rest\Billing;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
@@ -18,7 +19,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Create a resource
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function create($data)
@@ -29,7 +30,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Delete a resource
      *
-     * @param  mixed $id
+     * @param mixed $id
      * @return ApiProblem|mixed
      */
     public function delete($id)
@@ -40,7 +41,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Delete a collection, or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function deleteList($data)
@@ -51,7 +52,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Fetch a resource
      *
-     * @param  mixed $id
+     * @param mixed $id
      * @return ApiProblem|mixed
      */
     public function fetch($id)
@@ -62,7 +63,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Fetch all or a subset of resources
      *
-     * @param  array|Parameters $params
+     * @param array|Parameters $params
      * @return ApiProblem|mixed
      */
     public function fetchAll($params = [])
@@ -73,8 +74,8 @@ class BillingResource extends AbstractResourceListener
     /**
      * Patch (partial in-place update) a resource
      *
-     * @param  mixed $id
-     * @param  mixed $data
+     * @param mixed $id
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function patch($id, $data)
@@ -85,7 +86,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Patch (partial in-place update) a collection or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function patchList($data)
@@ -96,7 +97,7 @@ class BillingResource extends AbstractResourceListener
     /**
      * Replace a collection or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function replaceList($data)
@@ -107,12 +108,12 @@ class BillingResource extends AbstractResourceListener
     /**
      * Update a resource
      *
-     * @param  mixed $id
-     * @param  mixed $data
+     * @param mixed $id
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function update($id, $data)
     {
-        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+        return $this->mapper->update($id, $data);;
     }
 }
