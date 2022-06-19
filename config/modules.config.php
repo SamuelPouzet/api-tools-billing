@@ -6,6 +6,7 @@
  * The previous config file has been stored in ./config/modules.config.old
  */
 return [
+    'Laminas\Paginator\Adapter\LaminasDb',
     'Laminas\\Mvc\\I18n',
     'Laminas\\I18n',
     'Laminas\\ComposerAutoloading',
