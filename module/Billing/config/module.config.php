@@ -4,6 +4,7 @@ return [
         'factories' => [
             \Billing\V1\Rest\Billing\BillingResource::class => \Billing\V1\Rest\Billing\BillingResourceFactory::class,
             \Billing\V1\Rest\Billing\BillingMapper::class => \Billing\V1\Rest\Billing\BillingMapperFactory::class,
+            \Billing\V1\Rest\Company\CompanyResource::class => \Billing\V1\Rest\Company\CompanyResourceFactory::class,
             \Billing\V1\Rest\Company\CompanyMapper::class => \Billing\V1\Rest\Company\CompanyMapperFactory::class,
         ],
     ],

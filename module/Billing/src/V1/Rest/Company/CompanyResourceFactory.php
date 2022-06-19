@@ -5,6 +5,6 @@ class CompanyResourceFactory
 {
     public function __invoke($services)
     {
-        return new CompanyResource();
+        return new CompanyResource($services->get(CompanyMapper::class));
     }
 }
