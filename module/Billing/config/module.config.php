@@ -5,6 +5,7 @@ return [
             \Billing\V1\Rest\Billing\BillingResource::class => \Billing\V1\Rest\Billing\BillingResourceFactory::class,
             \Billing\V1\Rest\Billing\BillingMapper::class => \Billing\V1\Rest\Billing\BillingMapperFactory::class,
             \Billing\V1\Rest\User\UserResource::class => \Billing\V1\Rest\User\UserResourceFactory::class,
+            \Billing\V1\Rest\User\UserMapper::class =>\Billing\V1\Rest\User\UserMapperFactory::class,
         ],
     ],
     'router' => [

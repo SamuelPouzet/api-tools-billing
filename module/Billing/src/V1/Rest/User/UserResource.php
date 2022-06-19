@@ -7,6 +7,14 @@ use Laminas\Stdlib\Parameters;
 
 class UserResource extends AbstractResourceListener
 {
+
+    protected $mapper;
+
+    public function __construct($mapper)
+    {
+        $this->mapper = $mapper;
+    }
+
     /**
      * Create a resource
      *
@@ -48,7 +56,7 @@ class UserResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        return $this->mapper->fetchOne($id);
     }
 
     /**
@@ -59,7 +67,7 @@ class UserResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        return $this->mapper->fetchAll();
     }
 
     /**
