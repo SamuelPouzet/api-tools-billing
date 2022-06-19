@@ -50,20 +50,18 @@ class BillingMapper
         return $collection;
     }
 
-    public function create(string $json): bool
+    public function create(\stdClass $class): bool
     {
 
-        try{
-            $data = json_decode($json);
-        }catch (\Exception $e){
-            return false;
-        }
-
-        $entity = new BillingEntity($data);
+        //on passe par l'entity pour bénéficier des filtres des getters et setters
+        $entity = new BillingEntity(get_object_vars($class));
         $sql = new Sql($this->adapter);
-        $sql->insert();
-        $sql->values( $entity->getArrayCopy() );
+        $insert = $sql->insert();
+        $insert->into('bill');
+        $insert->values( $entity->getArrayCopy() );
 
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
         return true;
     }
 
