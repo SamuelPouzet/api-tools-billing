@@ -7,6 +7,14 @@ use Laminas\Stdlib\Parameters;
 
 class BillingResource extends AbstractResourceListener
 {
+
+    protected $mapper;
+
+    public function __construct($mapper)
+    {
+        $this->mapper = $mapper;
+    }
+
     /**
      * Create a resource
      *

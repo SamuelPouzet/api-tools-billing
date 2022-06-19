@@ -5,6 +5,6 @@ class BillingResourceFactory
 {
     public function __invoke($services)
     {
-        return new BillingResource();
+        return new BillingResource($services->get(BillingMapper::class));
     }
 }
