@@ -15,5 +15,10 @@
 declare(strict_types=1);
 
 return [
-    // ...
+    'db' => [
+        'driver' => 'Pdo',
+        'dsn' => 'mysql:dbname=billing;host=localhost;charset=utf8',
+        'username' => 'root',
+        'password' => '',
+    ]
 ];
