@@ -34,7 +34,7 @@ class BillingResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        return $this->mapper->delete($id);
     }
 
     /**
@@ -56,7 +56,7 @@ class BillingResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        return $this->mapper->fetchOne($id);
     }
 
     /**
@@ -67,7 +67,7 @@ class BillingResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        return $this->mapper->fetchAll();
     }
 
     /**

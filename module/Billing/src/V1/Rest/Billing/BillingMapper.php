@@ -32,6 +32,9 @@ class BillingMapper
         }
         $data = $results->toArray();
 
+        if (! isset($data[0] )) {
+            return false;
+        }
         $entity = new BillingEntity();
         $entity->exchangeArray($data[0]);
         return $entity;
