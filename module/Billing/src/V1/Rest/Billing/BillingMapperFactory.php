@@ -1,6 +1,6 @@
 <?php
 
-namespace billing\V1\Rest\Billing;
+namespace Billing\V1\Rest\Billing;
 
 use Laminas\Db\Adapter\Adapter;
 
