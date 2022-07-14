@@ -8,6 +8,8 @@ class GlobalMapperFactory
 {
     public function __invoke($services)
     {
-        return new GlobalMapper($services->get(Adapter::class));
+        $config = $services->get('config');
+        $relationalConfig = $config['mapper-relationnal']??null;
+        return new GlobalMapper($services->get(Adapter::class), $relationalConfig);
     }
 }

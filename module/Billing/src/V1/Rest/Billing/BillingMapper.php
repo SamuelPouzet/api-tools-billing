@@ -20,16 +20,16 @@ class BillingMapper
 
     public function fetchOne(int $id)
     {
-        $entity = new BillingEntity();
+        $entity = new BillingRelationnalEntity();
         $this->mapper->fetchOne($id, $entity);
         return $entity;
 
     }
 
-    public function fetchAll(): Paginator
+    public function fetchAll(): array
     {
-        $entity = new BillingEntity();
-        return new BillingCollection($this->mapper->getFetchAllAdapter($entity));
+        $entity = new BillingRelationnalEntity();
+        return $this->mapper->FetchAll($entity);
 
     }
 

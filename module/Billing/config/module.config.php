@@ -5,10 +5,10 @@ return [
             \Billing\V1\Rest\Billing\BillingResource::class => \Billing\V1\Rest\Billing\BillingResourceFactory::class,
             \Billing\V1\Rest\Billing\BillingMapper::class => \Billing\V1\Rest\Billing\BillingMapperFactory::class,
             \Billing\V1\Rest\User\UserResource::class => \Billing\V1\Rest\User\UserResourceFactory::class,
-            \Billing\V1\Rest\User\UserMapper::class =>\Billing\V1\Rest\User\UserMapperFactory::class,
+            \Billing\V1\Rest\User\UserMapper::class => \Billing\V1\Rest\User\UserMapperFactory::class,
             \Billing\V1\Rest\Company\CompanyResource::class => \Billing\V1\Rest\Company\CompanyResourceFactory::class,
             \Billing\V1\Rest\Company\CompanyMapper::class => \Billing\V1\Rest\Company\CompanyMapperFactory::class,
-            \Billing\V1\Main\Mapper\GlobalMapper::class =>\Billing\V1\Main\Mapper\GlobalMapperFactory::class,
+            \Billing\V1\Main\Mapper\GlobalMapper::class => \Billing\V1\Main\Mapper\GlobalMapperFactory::class,
         ],
     ],
     'router' => [
@@ -195,4 +195,26 @@ return [
             ],
         ],
     ],
+    'mapper-relationnal' => [
+        'oneToOne' => [
+
+        ],
+        'oneToMany' => [
+
+        ],
+        'manyToOne' => [
+            \Billing\V1\Rest\Billing\BillingRelationnalEntity::class => [
+                'user' => [
+                    'relatedClass' => \Billing\V1\Rest\User\UserEntity::class,
+                    'id' => 'user_id',
+                    'relatedId' => 'id',
+                ],
+                'company' => [
+                    'relatedClass' => \Billing\V1\Rest\Company\CompanyEntity::class,
+                    'id' => 'company_id',
+                    'relatedId' => 'id',
+                ],
+            ],
+        ],
+    ]
 ];

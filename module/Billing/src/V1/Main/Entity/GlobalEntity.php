@@ -2,8 +2,11 @@
 
 namespace Billing\V1\Main\Entity;
 
+use Billing\V1\Main\Traits\NamingTrait;
+
 class GlobalEntity
 {
+    use NamingTrait;
 
     public function __construct(?array $data = null)
     {
@@ -35,11 +38,4 @@ class GlobalEntity
 
     }
 
-    private function keyAsSetter(string $key): string
-    {
-        $array = explode('_', $key);
-        array_map('strtolower', $array);
-        array_map('ucfirst', $array);
-        return 'set' . implode('', $array);
-    }
 }
