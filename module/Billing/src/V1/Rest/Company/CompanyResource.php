@@ -1,6 +1,7 @@
 <?php
 namespace Billing\V1\Rest\Company;
 
+use Billing\V1\Main\Exception\NoDataException;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\Stdlib\Parameters;
@@ -65,7 +66,13 @@ class CompanyResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return $this->mapper->fetchOne($id);
+        try {
+            return $this->mapper->fetchOne($id);
+        } catch (NoDataException $e) {
+            return new ApiProblem(400, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(500, 'An unknown error occured');
+        }
     }
 
     /**
@@ -122,6 +129,12 @@ class CompanyResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return $this->mapper->update($id, $data);
+        try {
+            return $this->mapper->update($id, $data);
+        } catch (NoDataException $e) {
+            return new ApiProblem(400, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(500, 'An unknown error occured');
+        }
     }
 }

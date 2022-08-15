@@ -113,13 +113,13 @@ Pour les compagnies
 > 
 Enfin, pour les notes de frais
 
-> [get] /bill pour obtenir la liste des notes enregistrées, avec les relations associées, ce qui ne me semble, d'origine, pas géré par API tools
+> [get] /billing pour obtenir la liste des notes enregistrées, avec les relations associées, ce qui ne me semble, d'origine, pas géré par API tools
 >
-> [get] /bill/{id} pour obtenir les données sur une note de frais avec l'identifiant concerné
+> [get] /billing/{id} pour obtenir les données sur une note de frais avec l'identifiant concerné
 >
-> [post] /bill pour créer une note de frais an joignant un flux JSON formatté de la sorte
+> [post] /billing pour créer une note de frais an joignant un flux JSON formatté de la sorte
 > 
-> [put] /bill/{id} pour mettre à jour une note de frais an joignant un flux JSON formatté de la sorte
+> [put] /billing/{id} pour mettre à jour une note de frais an joignant un flux JSON formatté de la sorte
 > 
 >> {
 "user_id": "1",

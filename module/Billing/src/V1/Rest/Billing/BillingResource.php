@@ -70,14 +70,9 @@ class BillingResource extends AbstractResourceListener
         try {
             return $this->mapper->fetchOne($id);
         } catch (NoDataException $e) {
-            $return = [
-                'status' => 'Not Found',
-                'statusCode' => 0
-            ];
-
-            return json_encode($return);
+            return new ApiProblem(400, $e->getMessage());
         } catch (\Exception $e) {
-            return json_encode($e);
+            return new ApiProblem(500, 'An unknown error occured');
         }
 
     }
@@ -136,7 +131,13 @@ class BillingResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return $this->mapper->update($id, $data);;
+        try {
+            return $this->mapper->update($id, $data);
+        } catch (NoDataException $e) {
+            return new ApiProblem(400, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(500, 'An unknown error occured');
+        }
     }
 
 }

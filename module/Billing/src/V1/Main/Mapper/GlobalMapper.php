@@ -3,6 +3,7 @@
 namespace Billing\V1\Main\Mapper;
 
 use Billing\V1\Main\Entity\EntityInterface;
+use Billing\V1\Main\Exception\NoDataException;
 use Billing\V1\Main\Traits\NamingTrait;
 use Billing\V1\Rest\Billing\BillingCollection;
 use Billing\V1\Rest\Billing\BillingEntity;
@@ -58,7 +59,7 @@ class GlobalMapper
 
         $data = $results->toArray();
         if (count($data) <= 0) {
-            throw new \Exception('No Bill with this id');;
+            throw new NoDataException( sprintf('No element with id: %1$s in table %2$s', $id, $entity::TABLENAME));;
         }
 
         $entity->exchangeArray($data[0]);
@@ -125,7 +126,9 @@ class GlobalMapper
         $insert->values($entity->getArrayCopy());
 
         $statement = $sql->prepareStatementForSqlObject($insert);
-        $statement->execute();
+        $result = $statement->execute();
+
+        $entity->setId($result->getGeneratedValue());
 
         return $entity;
     }
