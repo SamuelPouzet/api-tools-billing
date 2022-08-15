@@ -89,7 +89,9 @@ Il existe  des routes pour les utilisateurs.
 > 
 > [post] /user pour créer un utilisateur an joignant un flux JSON formatté de la sorte
 > 
-> {
+> [put] /user/{id} pour mettre à jour un utilisateur an joignant un flux JSON formatté de la sorte
+> 
+>> {
 "name": "NAME",
 "firstName": "FIRSTNAME",
 "mail": "mail@domain.fr",
@@ -103,7 +105,9 @@ Pour les compagnies
 >
 > [post] /company pour créer une compagnie an joignant un flux JSON formatté de la sorte
 >
-> {
+> [put] /company/{id} pour mettre à jour une compagnie an joignant un flux JSON formatté de la sorte
+> 
+>> {
 "name": "ma belle companie"
 }
 > 
@@ -114,8 +118,10 @@ Enfin, pour les notes de frais
 > [get] /bill/{id} pour obtenir les données sur une note de frais avec l'identifiant concerné
 >
 > [post] /bill pour créer une note de frais an joignant un flux JSON formatté de la sorte
->
-> {
+> 
+> [put] /bill/{id} pour mettre à jour une note de frais an joignant un flux JSON formatté de la sorte
+> 
+>> {
 "user_id": "1",
 "date_bill": "1970-01-01",
 "amount": "500",
