@@ -6,11 +6,15 @@ use Billing\V1\Main\Entity\EntityInterface;
 use Billing\V1\Main\Traits\NamingTrait;
 use Billing\V1\Rest\Billing\BillingCollection;
 use Billing\V1\Rest\Billing\BillingEntity;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Sql\Sql;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\Paginator;
 
+/**
+ *
+ */
 class GlobalMapper
 {
 
@@ -26,37 +30,48 @@ class GlobalMapper
      */
     protected $relationalConfig;
 
+    /**
+     * @param AdapterInterface $adapter
+     * @param array|null $relationalConfig
+     */
     public function __construct(AdapterInterface $adapter, ?array $relationalConfig)
     {
         $this->relationalConfig = $relationalConfig;
         $this->adapter = $adapter;
     }
 
+    /**
+     * @param int $id
+     * @param EntityInterface $entity
+     * @return EntityInterface|null
+     * @throws \Exception
+     */
     public function fetchOne(int $id, EntityInterface $entity): ?EntityInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from( $entity::TABLENAME );
+        $select->from($entity::TABLENAME);
         $select->where(['id' => $id]);
 
         $selectString = $sql->buildSqlString($select);
         $results = $this->adapter->query($selectString, $this->adapter::QUERY_MODE_EXECUTE);
 
-        if (!$results) {
-            return null;
-        }
         $data = $results->toArray();
-
-        if (!isset($data[0])) {
-            return null;
+        if (count($data) <= 0) {
+            throw new \Exception('No Bill with this id');;
         }
+
         $entity->exchangeArray($data[0]);
         $this->getRelations($entity);
         return $entity;
 
     }
 
-    public function getFetchAllAdapter( EntityInterface $entity): DbSelect
+    /**
+     * @param EntityInterface $entity
+     * @return DbSelect
+     */
+    public function getFetchAllAdapter(EntityInterface $entity): DbSelect
     {
         // the select instance is needed for the collection's paginator
         $sql = new Sql($this->adapter);
@@ -66,7 +81,12 @@ class GlobalMapper
         return new DbSelect($select, $this->adapter);
     }
 
-    public function FetchAll( EntityInterface $entity ): array
+    /**
+     * @param EntityInterface $entity
+     * @return array
+     * @throws \Exception
+     */
+    public function FetchAll(EntityInterface $entity): array
     {
         // the select instance is needed for the collection's paginator
         $sql = new Sql($this->adapter);
@@ -93,6 +113,10 @@ class GlobalMapper
         return $elementsList;
     }
 
+    /**
+     * @param EntityInterface $entity
+     * @return EntityInterface
+     */
     public function create(EntityInterface $entity)
     {
         $sql = new Sql($this->adapter);
@@ -106,18 +130,28 @@ class GlobalMapper
         return $entity;
     }
 
+    /**
+     * @param EntityInterface $entity
+     * @return bool
+     */
     public function delete(EntityInterface $entity)
     {
         $sql = new Sql($this->adapter);
         $delete = $sql->delete();
         $delete->from($entity::TABLENAME);
-        $delete->where(['id' => $entity->getId() ]);
+        $delete->where(['id' => $entity->getId()]);
 
         $statement = $sql->prepareStatementForSqlObject($delete);
         $statement->execute();
         return true;
     }
 
+    /**
+     * @param EntityInterface $entityToUpdate
+     * @param \stdClass $class
+     * @return bool
+     * @throws \Exception
+     */
     public function update(EntityInterface $entityToUpdate, \stdClass $class): bool
     {
 
@@ -135,7 +169,7 @@ class GlobalMapper
 
         $update = $sql->update();
         $update->table($entityToUpdate::TABLENAME);
-        $update->set($this->removeRelationsFromArrayCopy( $entityToUpdate->getArrayCopy(), $entityToUpdate ) );
+        $update->set($this->removeRelationsFromArrayCopy($entityToUpdate->getArrayCopy(), $entityToUpdate));
         $update->where(['id' => $entityToUpdate->getId()]);
 
         $statement = $sql->prepareStatementForSqlObject($update);
@@ -143,23 +177,28 @@ class GlobalMapper
         return true;
     }
 
+    /**
+     * @param array $arrayCopy
+     * @param EntityInterface $entity
+     * @return array
+     */
     private function removeRelationsFromArrayCopy(array $arrayCopy, EntityInterface $entity): array
     {
-        if(!$this->relationalConfig){
+        if (!$this->relationalConfig) {
             //On n'a pas de relations de configurées, rien à changer donc, ou alors config foireuse
             return $arrayCopy;
         }
 
-        foreach ($this->relationalConfig as $relationType => $relationsList){
-            if(! isset($relationsList[get_class($entity)]) || empty($relationsList[get_class($entity)])){
+        foreach ($this->relationalConfig as $relationType => $relationsList) {
+            if (!isset($relationsList[get_class($entity)]) || empty($relationsList[get_class($entity)])) {
                 continue;
             }
-            foreach ($relationsList[get_class($entity)] as $key=>$config){
+            foreach ($relationsList[get_class($entity)] as $key => $config) {
 
-               //on se moque de la config, on a ici une jointure qui n'a pas vocation à être persistée
-                 if(isset($arrayCopy[$key])){
-                     unset($arrayCopy[$key]);
-                 }
+                //on se moque de la config, on a ici une jointure qui n'a pas vocation à être persistée
+                if (isset($arrayCopy[$key])) {
+                    unset($arrayCopy[$key]);
+                }
             }
         }
 
@@ -167,51 +206,62 @@ class GlobalMapper
 
     }
 
+    /**
+     * @param EntityInterface $entity
+     * @return void
+     * @throws \Exception
+     */
     private function getRelations(EntityInterface $entity): void
     {
-        if(!$this->relationalConfig){
+        if (!$this->relationalConfig) {
             return;
         }
 
-        foreach ($this->relationalConfig as $relationType => $relationsList){
+        foreach ($this->relationalConfig as $relationType => $relationsList) {
             $method = 'set' . ucfirst($relationType);
 
-            if(method_exists($this, $method)){
-                if(! isset($relationsList[get_class($entity)]) || empty($relationsList[get_class($entity)])){
+            if (method_exists($this, $method)) {
+                if (!isset($relationsList[get_class($entity)]) || empty($relationsList[get_class($entity)])) {
                     continue;
                 }
                 $this->$method($relationsList[get_class($entity)], $entity);
-            }else{
+            } else {
                 throw new \Exception(sprintf('relation %s doesn\'t exists', $relationType));
             }
 
         }
     }
 
+    /**
+     * @param array $relationsList
+     * @param EntityInterface $entity
+     * @return void
+     * @throws \Exception
+     */
     protected function setOneToOne(array $relationsList, EntityInterface $entity): void
     {
-        foreach ($relationsList as $key => $relation){
+        foreach ($relationsList as $key => $relation) {
             $method = $this->keyAsSetter($key);
-            if(method_exists($entity, $method)){
-                if(!isset($relation['relatedClass'])){
+            if (method_exists($entity, $method)) {
+                if (!isset($relation['relatedClass'])) {
                     throw new \Exception('relatedClass is mandatory in config');
-                }elseif(! class_exists($relation['relatedClass'])){
-                    throw new \Exception(sprintf('class %c doesn\'t exists', $relation['relatedClass']) );
+                } elseif (!class_exists($relation['relatedClass'])) {
+                    throw new \Exception(sprintf('class %c doesn\'t exists', $relation['relatedClass']));
                 }
-                if(!isset($relation['id'])){
+                if (!isset($relation['id'])) {
                     throw new \Exception('id is mandatory in config');
                 }
 
-                $relatedEntity =  new $relation['relatedClass'];
+                $relatedEntity = new $relation['relatedClass'];
                 $getMethod = $this->keyAsGetter($relation['id']);
-                if(method_exists($entity, $getMethod)){
+                if (method_exists($entity, $getMethod)) {
                     $foreignKey = $entity->$getMethod();
-                    if(!$foreignKey){
+                    if (!$foreignKey) {
                         throw new \Exception('trying to relate with no key');
                     }
                 }
 
-                if(! $this->fetchOne($foreignKey, $relatedEntity) ){
+                if (!$this->fetchOne($foreignKey, $relatedEntity)) {
                     throw new \Exception('Trying to relate to an unexisting entity');
                 }
                 $entity->$method($relatedEntity);
@@ -220,16 +270,28 @@ class GlobalMapper
 
     }
 
+    /**
+     * @param array $relationsList
+     * @param EntityInterface $entity
+     * @return void
+     * @throws \Exception
+     */
     protected function setManyToOne(array $relationsList, EntityInterface $entity)
     {
         $this->setOneToOne($relationsList, $entity);
     }
 
+    /**
+     * @return void
+     */
     protected function setOneToMany()
     {
 
     }
 
+    /**
+     * @return void
+     */
     protected function setManyToMany()
     {
 

@@ -2,15 +2,25 @@
 
 namespace Billing\V1\Rest\Billing;
 
+use Billing\V1\Main\Exception\NoDataException;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\Stdlib\Parameters;
 
+/**
+ *
+ */
 class BillingResource extends AbstractResourceListener
 {
 
+    /**
+     * @var
+     */
     protected $mapper;
 
+    /**
+     * @param $mapper
+     */
     public function __construct($mapper)
     {
         $this->mapper = $mapper;
@@ -57,7 +67,19 @@ class BillingResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return $this->mapper->fetchOne($id);
+        try {
+            return $this->mapper->fetchOne($id);
+        } catch (NoDataException $e) {
+            $return = [
+                'status' => 'Not Found',
+                'statusCode' => 0
+            ];
+
+            return json_encode($return);
+        } catch (\Exception $e) {
+            return json_encode($e);
+        }
+
     }
 
     /**

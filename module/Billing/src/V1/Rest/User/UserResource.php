@@ -1,15 +1,25 @@
 <?php
+
 namespace Billing\V1\Rest\User;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\Stdlib\Parameters;
 
+/**
+ *
+ */
 class UserResource extends AbstractResourceListener
 {
 
+    /**
+     * @var
+     */
     protected $mapper;
 
+    /**
+     * @param $mapper
+     */
     public function __construct($mapper)
     {
         $this->mapper = $mapper;
@@ -18,7 +28,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Create a resource
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function create($data)
@@ -29,7 +39,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Delete a resource
      *
-     * @param  mixed $id
+     * @param mixed $id
      * @return ApiProblem|mixed
      */
     public function delete($id)
@@ -40,7 +50,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Delete a collection, or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function deleteList($data)
@@ -51,7 +61,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Fetch a resource
      *
-     * @param  mixed $id
+     * @param mixed $id
      * @return ApiProblem|mixed
      */
     public function fetch($id)
@@ -62,7 +72,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Fetch all or a subset of resources
      *
-     * @param  array|Parameters $params
+     * @param array|Parameters $params
      * @return ApiProblem|mixed
      */
     public function fetchAll($params = [])
@@ -73,8 +83,8 @@ class UserResource extends AbstractResourceListener
     /**
      * Patch (partial in-place update) a resource
      *
-     * @param  mixed $id
-     * @param  mixed $data
+     * @param mixed $id
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function patch($id, $data)
@@ -85,7 +95,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Patch (partial in-place update) a collection or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function patchList($data)
@@ -96,7 +106,7 @@ class UserResource extends AbstractResourceListener
     /**
      * Replace a collection or members of a collection
      *
-     * @param  mixed $data
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function replaceList($data)
@@ -107,8 +117,8 @@ class UserResource extends AbstractResourceListener
     /**
      * Update a resource
      *
-     * @param  mixed $id
-     * @param  mixed $data
+     * @param mixed $id
+     * @param mixed $data
      * @return ApiProblem|mixed
      */
     public function update($id, $data)

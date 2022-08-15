@@ -5,6 +5,10 @@ namespace Billing\V1\Rest\Billing;
 use Billing\V1\Rest\Company\CompanyEntity;
 use Billing\V1\Rest\User\UserEntity;
 
+/**
+ * class BillingRelationnalEntity
+ * Used to create Relations for billingentity
+ */
 class BillingRelationnalEntity extends BillingEntity
 {
     /**
@@ -17,6 +21,9 @@ class BillingRelationnalEntity extends BillingEntity
      */
     protected $company;
 
+    /**
+     * @param array|null $data
+     */
     public function __construct(?array $data = null)
     {
         parent::__construct($data);

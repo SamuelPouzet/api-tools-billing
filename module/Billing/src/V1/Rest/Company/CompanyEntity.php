@@ -1,14 +1,24 @@
 <?php
+
 namespace Billing\V1\Rest\Company;
 
 use Billing\V1\Main\Entity\EntityInterface;
 use Billing\V1\Main\Entity\GlobalEntity;
 
+/**
+ *
+ */
 class CompanyEntity extends GlobalEntity implements EntityInterface
 {
 
+    /**
+     * shows table name used by the mapper to create query
+     */
     const TABLENAME = 'company';
 
+    /**
+     * @return string
+     */
     public function getTableName()
     {
         return self::TABLENAME;

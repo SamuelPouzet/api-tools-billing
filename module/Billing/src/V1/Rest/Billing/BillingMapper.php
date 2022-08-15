@@ -8,16 +8,30 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Paginator\Paginator;
 
 
+/**
+ *
+ */
 class BillingMapper
 {
 
+    /**
+     * @var GlobalMapper
+     */
     protected $mapper;
 
+    /**
+     * @param GlobalMapper $mapper
+     */
     public function __construct(GlobalMapper $mapper)
     {
         $this->mapper = $mapper;
     }
 
+    /**
+     * @param int $id
+     * @return BillingRelationnalEntity
+     * @throws \Exception
+     */
     public function fetchOne(int $id)
     {
         $entity = new BillingRelationnalEntity();
@@ -26,6 +40,10 @@ class BillingMapper
 
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function fetchAll(): array
     {
         $entity = new BillingRelationnalEntity();
@@ -33,6 +51,10 @@ class BillingMapper
 
     }
 
+    /**
+     * @param \stdClass $class
+     * @return EntityInterface
+     */
     public function create(\stdClass $class)
     {
         //on passe par l'entity pour bénéficier des filtres des getters et setters
@@ -40,12 +62,23 @@ class BillingMapper
         return $this->mapper->create($entity);
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     * @throws \Exception
+     */
     public function delete(int $id)
     {
         $entity = $this->fetchOne($id);
         return $this->mapper->delete($entity);
     }
 
+    /**
+     * @param int $id
+     * @param \stdClass $class
+     * @return bool
+     * @throws \Exception
+     */
     public function update(int $id, \stdClass $class)
     {
         $entity = $this->fetchOne($id);

@@ -1,13 +1,23 @@
 <?php
+
 namespace Billing\V1\Rest\User;
 
 use Billing\V1\Main\Entity\EntityInterface;
 use Billing\V1\Main\Entity\GlobalEntity;
 
+/**
+ * class UserEntity
+ */
 class UserEntity extends GlobalEntity implements EntityInterface
 {
+    /**
+     * table name
+     */
     const TABLENAME = 'user';
 
+    /**
+     * @return string
+     */
     public function getTableName()
     {
         return self::TABLENAME;

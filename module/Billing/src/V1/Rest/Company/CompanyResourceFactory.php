@@ -1,4 +1,5 @@
 <?php
+
 namespace Billing\V1\Rest\Company;
 
 class CompanyResourceFactory

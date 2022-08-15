@@ -5,11 +5,20 @@ use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\Stdlib\Parameters;
 
+/**
+ * class CompanyResource
+ */
 class CompanyResource extends AbstractResourceListener
 {
 
+    /**
+     * @var
+     */
     protected $mapper;
 
+    /**
+     * @param $mapper
+     */
     public function __construct($mapper)
     {
         $this->mapper = $mapper;
